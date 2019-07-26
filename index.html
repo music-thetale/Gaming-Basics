@@ -2,25 +2,68 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+ <meta content="text/html; charset=utf-8" 
+    http-equiv="Content-Type">
+    <meta content="utf-8" http-equiv="encoding">
   
-  <title>Frontend </title>
-
-  <!-- Feel free to remove these styles or customise in your own stylesheet 👍 -->
-  <style>
-    .attribution { font-size: 11px; text-align: center; }
-    .attribution a { color: hsl(228, 45%, 44%); }
-  </style>
-</head>
+  <title> Rhombus Pattern </title>
+  </head>
+  
 <body>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
 
+<script>
+var ballX = 25;
+var ballY = 25;
+var ballSpeedY = 7;
+var ballSpeedX = 5;
 
+var canvas, canvasContext;
 
-  <footer>
-    <p class="attribution">
-      North Carolina
-    </p>
-  </footer>
+window.onload = function() {
+    canvas = document.getElementById('gameCanvas');
+    canvasContext = canvas.getContext('2d');
+    
+    //the smaller the proportion, the faster the ball
+    var framesPerSecond = 100;
+    setInterval(updateAll, 1000/framesPerSecond);
+
+    canvasContext.fillStyle = 'white';
+    canvasContext.fillRect(0,0, canvas.width, canvas.height);
+}
+
+function updateAll() {
+    ballX += ballSpeedX;
+    ballY += ballSpeedY;
+
+    if(ballX < 0) {
+        ballSpeedX *= -1;
+    }
+    if(ballX > canvas.width){
+        ballSpeedX *= -1;
+    }
+    if(ballY < 0) {
+        ballSpeedY *= -1;
+    }
+    if(ballY > canvas.height){
+        ballSpeedY *= -1;
+    }
+    
+    //commenting the canvas allows to draw beautiful rhombus
+    /*canvasContext.fillStyle = 'black';
+    canvasContext.fillRect(0,0, canvas.width, canvas.height);*/
+
+    canvasContext.fillStyle = 'blue';
+    canvasContext.beginPath();
+    //false is default and indicates clockwise, true
+    //stands for counter-clockwise.
+    canvasContext.arc(ballX,ballY,10,0,Math.PI*2, false);
+    canvasContext.fill();
+}
+
+</script>
 </body>
+
+</html>
 </html>
