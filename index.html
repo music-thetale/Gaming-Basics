@@ -16,7 +16,20 @@ var ballY = 25;
 var ballSpeedY = 7;
 var ballSpeedX = 5;
 
+const PADDLE_WIDTH = 100;
+const PADDLE_THICKNESS = 10;
+const PADDLE_DIST_FROM_EDGE = 60;
+var paddleX = 400;
+
 var canvas, canvasContext;
+
+function updateMousePos(evt) {
+    var rect = canvas.getBoundingClientRect();
+    var root = document.documentElement;
+    var mouseX = evt.clientX - rect.left -root.scrollLeft;
+
+    paddleX = mouseX;
+}
 
 window.onload = function() {
     canvas = document.getElementById('gameCanvas');
@@ -26,6 +39,8 @@ window.onload = function() {
     var framesPerSecond = 100;
     setInterval(updateAll, 1000/framesPerSecond);
 
+canvas.addEventListener('mousemove', updateMousePos);
+
     canvasContext.fillStyle = 'white';
     canvasContext.fillRect(0,0, canvas.width, canvas.height);
 }
@@ -34,6 +49,12 @@ function updateAll() {
     moveAll();
     drawAll();
 }
+
+function ballReset(){
+    ballX = canvas.width/2;
+    ballY = canvas.height/2;
+}
+
 function moveAll() {
     ballX += ballSpeedX;
     ballY += ballSpeedY;
@@ -47,9 +68,20 @@ function moveAll() {
     if(ballY < 0) {
         ballSpeedY *= -1;
     }
-    if(ballY > canvas.height){
-        ballSpeedY *= -1;
+    if(ballY > canvas.height){ // this will reset ball when going bottom
+        ballReset();
+        //ballSpeedY *= -1;  this will reset ball when going bottom
     }
+    var paddleTopEdgeY = canvas.height -PADDLE_DIST_FROM_EDGE;
+    var paddleBottomEdgeY = paddleTopEdgeY + PADDLE_THICKNESS;
+    var paddleLeftEdgeX = paddleX;
+    var paddleRightEdgeX  = paddleLeftEdgeX + PADDLE_WIDTH;
+    if(ballY > paddleTopEdgeY &&
+        ballY < paddleBottomEdgeY &&
+        ballX > paddleLeftEdgeX &&
+        ballX < paddleRightEdgeX) {
+            ballSpeedY *= -1;
+        }
 }
     
     function drawAll() {
@@ -60,6 +92,10 @@ function moveAll() {
 
     colorRect(0,0,canvas.width, canvas.height,'black'); //clear screen
     colorCircle(ballX,ballY,10,'red');                  //draw ball
+
+    colorRect(paddleX, canvas.height - PADDLE_THICKNESS,
+    PADDLE_WIDTH, 
+    PADDLE_THICKNESS)
 
     }
 
